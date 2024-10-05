@@ -85,11 +85,12 @@ const BeaconVisualization: React.FC = () => {
   // Calculate beacon position on Earth using spherical coordinates
   const latitude = currentBeaconData.location.latitude;
   const longitude = currentBeaconData.location.longitude;
+  const altitude = currentBeaconData.location.altitude;
 
   const phi = ((90 - latitude) * Math.PI) / 180;
   const theta = ((longitude + 180) * Math.PI) / 180;
 
-  const x = -EARTH_RADIUS * Math.sin(phi) * Math.cos(theta);
+  const x = -EARTH_RADIUS * Math.sin(phi) * Math.cos(theta) + altitude - 597;
   const z = EARTH_RADIUS * Math.sin(phi) * Math.sin(theta);
   const y = EARTH_RADIUS * Math.cos(phi);
 
@@ -105,29 +106,32 @@ const BeaconVisualization: React.FC = () => {
       </div>
       
       <div className="canvas-container">
-      <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }} style={{ height: '100vh' }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[200, 200, 200]} intensity={1} />
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+        <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }} style={{ height: '100vh' }}>
+          <ambientLight intensity={0.5}/>
+          <ambientLight color="#9999ff" intensity={0.3}/>
+          <hemisphereLight color="#ffffff" groundColor="#080820" intensity={0.8}/>
+          <pointLight position={[200, 200, 200]} intensity={1}/>
+          <OrbitControls enablePan={true} enableZoom={true} enableRotate={true}/>
 
-        {/* Add Earth to the scene */}
-        <Earth />
+          {/* Add Earth to the scene */}
+          <Earth/>
 
-        {currentBeaconData && (
-          <Beacon
-            key={currentBeaconData.messageId}
-            position={beaconPosition}
-            rotation={[
-              currentBeaconData.rotation.yaw,
-              currentBeaconData.rotation.pitch,
-              currentBeaconData.rotation.roll,
-            ]}
-            gyroscopicAcceleration={currentBeaconData.gyroscopicAcceleration}
-            dataView={dataView}
-            predictedRotation={predictedRotation}
-          />
-        )}
-      </Canvas>
+          {currentBeaconData && (
+              <Beacon
+                  key={currentBeaconData.messageId}
+                  position={beaconPosition}
+                  location={currentBeaconData.location}
+                  rotation={[
+                    currentBeaconData.rotation.yaw,
+                    currentBeaconData.rotation.pitch,
+                    currentBeaconData.rotation.roll,
+                  ]}
+                  gyroscopicAcceleration={currentBeaconData.gyroscopicAcceleration}
+                  dataView={dataView}
+                  predictedRotation={predictedRotation}
+              />
+          )}
+        </Canvas>
       </div>
     </>
   );

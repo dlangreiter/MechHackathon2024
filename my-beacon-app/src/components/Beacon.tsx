@@ -9,6 +9,11 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 interface BeaconProps {
   position: [number, number, number];
+  location: {
+    latitude: number;
+    longitude: number;
+    altitude: number;
+  };
   rotation: [number, number, number];
   gyroscopicAcceleration: {
     yaw: number;
@@ -21,6 +26,7 @@ interface BeaconProps {
 
 const Beacon: React.FC<BeaconProps> = ({
   position,
+  location,
   rotation,
   gyroscopicAcceleration,
   dataView,
@@ -70,9 +76,9 @@ const Beacon: React.FC<BeaconProps> = ({
   let displayData;
   switch (dataView) {
     case 'position':
-      displayData = `Lat: ${position[0].toFixed(
+      displayData = `Lat: ${location.latitude.toFixed(
         2
-      )}, Lon: ${position[2].toFixed(2)}, Alt: ${position[1].toFixed(2)}`;
+      )}, Lon: ${location.longitude.toFixed(2)}, Alt: ${location.altitude.toFixed(2)}`;
       break;
     case 'orientation':
       displayData = `Yaw: ${rotation[0].toFixed(
