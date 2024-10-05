@@ -106,7 +106,7 @@ const BeaconVisualization: React.FC = () => {
       </div>
       
       <div className="canvas-container">
-        <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }} style={{ height: '100vh' }}>
+        <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }} style={{ height: '100vh', background: '#080810' }}>
           <ambientLight intensity={0.5}/>
           <ambientLight color="#9999ff" intensity={0.3}/>
           <hemisphereLight color="#ffffff" groundColor="#080820" intensity={0.8}/>
