@@ -105,7 +105,7 @@ const BeaconVisualization: React.FC = () => {
       </div>
       
       <div className="canvas-container">
-      <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }}>
+      <Canvas camera={{ position: [0, 150, 300], near: 0.1, far: 1000 }} style={{ height: '100vh' }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[200, 200, 200]} intensity={1} />
         <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
