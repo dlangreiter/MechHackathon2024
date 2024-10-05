@@ -1,9 +1,11 @@
 // src/components/Beacon.tsx
 
 import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useLoader } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 interface BeaconProps {
   position: [number, number, number];
@@ -26,6 +28,13 @@ const Beacon: React.FC<BeaconProps> = ({
 }) => {
   const mesh = useRef<THREE.Mesh>(null!);
   const arrowRef = useRef<THREE.ArrowHelper>(null!);
+
+  // Load model & textures
+  const materials = useLoader(MTLLoader, '/models/beacon.mtl');
+  const beacon = useLoader(OBJLoader, '/models/beacon.obj', (loader) => {
+    materials.preload();
+    loader.setMaterials(materials);
+  });
 
   useFrame(() => {
     // Apply current rotation
@@ -82,39 +91,36 @@ const Beacon: React.FC<BeaconProps> = ({
   }
 
   return (
-    <group position={position}>
-      <mesh ref={mesh}>
-        <boxGeometry args={[5, 5, 5]} />
-        <meshStandardMaterial color={'orange'} />
-      </mesh>
+      <group position={position}>
+        <primitive ref={mesh} object={beacon}/>
 
-      {/* Predicted Orientation Arrow */}
-      {predictedRotation && (
-        <arrowHelper
-          ref={arrowRef}
-          args={[
-            new THREE.Vector3(0, 1, 0), // initial direction
-            new THREE.Vector3(0, 0, 0), // origin
-            20, // length of arrow
-            0x00ff00, // color (green)
-          ]}
-        />
-      )}
+        {/* Predicted Orientation Arrow */}
+        {predictedRotation && (
+            <arrowHelper
+                ref={arrowRef}
+                args={[
+                  new THREE.Vector3(0, 1, 0), // initial direction
+                  new THREE.Vector3(0, 0, 0), // origin
+                  20, // length of arrow
+                  0x00ff00, // color (green)
+                ]}
+            />
+        )}
 
-      <Html position={[0, 10, 0]} center>
-        <div
-          style={{
-            color: 'white',
-            background: 'rgba(0, 0, 0, 0.5)',
-            padding: '2px 5px',
-            borderRadius: '5px',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {displayData}
-        </div>
-      </Html>
-    </group>
+        <Html position={[0, 10, 0]} center>
+          <div
+              style={{
+                color: 'white',
+                background: 'rgba(0, 0, 0, 0.5)',
+                padding: '2px 5px',
+                borderRadius: '5px',
+                whiteSpace: 'nowrap',
+              }}
+          >
+            {displayData}
+          </div>
+        </Html>
+      </group>
   );
 };
 
