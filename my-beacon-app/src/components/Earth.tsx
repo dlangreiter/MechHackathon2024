@@ -12,8 +12,13 @@ const Earth: React.FC = () => {
 
   const earthRef = useRef<THREE.Mesh>(null!);
 
-  useFrame(() => {
-    earthRef.current.rotation.y += 0.0005; // Rotate Earth slowly
+  // Adjust rotation speed to match the beacon's longitude change
+  const rotationSpeedDegreesPerSecond = 0.0216; // degrees per second
+  const rotationSpeed = THREE.MathUtils.degToRad(rotationSpeedDegreesPerSecond); // Convert to radians
+
+  useFrame((_, delta) => {
+    // Rotate Earth around its Y-axis
+    earthRef.current.rotation.y += rotationSpeed * delta;
   });
 
   return (
